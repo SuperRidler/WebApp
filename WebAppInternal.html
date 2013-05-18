@@ -1,0 +1,303 @@
+<html>
+	<body>
+		<script src="three.js"></script>
+		<script type="text/javascript" src="https://raw.github.com/mrdoob/three.js/r44/examples/js/Stats.js"></script>
+		<script src="jquery.min.js"></script>
+		<script>
+			var data = "";
+			var container, stats;
+			var camera, scene, renderer;
+			var something = 0.01;
+			var s = 0;
+			var merged;
+            var zoom = 0.01;
+			var zoomin = true;
+			var position;
+			var moveSpeed = 50;
+			var directionalLight, directionalLight2, ambientLight;
+            
+			init();
+			//animate();
+			
+			function init() {
+				
+				container = document.createElement('div');
+				document.body.appendChild(container);
+				
+				camera = new THREE.OrthographicCamera(window.innerWidth/-zoom,
+													 window.innerWidth/zoom,
+													 window.innerHeight/zoom,
+													 window.innerHeight/-zoom,
+													 -10000,
+													 1000000);
+				camera.position.x = 6400;
+				camera.position.y = 3200;
+				camera.position.z = 6400;
+				
+				scene = new THREE.Scene();
+				
+				
+				var merged = new THREE.Geometry();
+				
+				/* Draw the grid. */
+				var size = 0, step = 25;
+				var geometry = new THREE.Geometry();
+				for (var i = -size; i <= size; i += step) {
+					geometry.vertices.push(new THREE.Vector3(-size, 0, i));
+					geometry.vertices.push(new THREE.Vector3(size, 0, i));
+					geometry.vertices.push(new THREE.Vector3(i, 0, -size));
+					geometry.vertices.push(new THREE.Vector3(i, 0, size));
+				}
+				var material = new THREE.LineBasicMaterial({color: 0x000000,
+															opacity: 0.3});
+				var grid = new THREE.Line(geometry, material);
+				grid.type = THREE.LinePieces;
+				scene.add(grid);
+				
+				/* Draw some cubes. */
+				/*var geometry = new THREE.CubeGeometry(25, 25, 25);
+				var material = new THREE.MeshLambertMaterial({color: 0xffffff,
+															  shading: THREE.FlatShading,
+															  overdraw: true});
+				var cube = new THREE.Mesh(geometry, material);
+				for (var i = 0; i < 10000; i++) {
+					//var cube = new THREE.Mesh(geometry, material);
+					cube.scale.y = Math.floor(Math.random() * 3 + 1);
+					cube.position.x = Math.ceil((-2000 + Math.floor((Math.random() * 4000)))/25)*25+(25/2);
+					cube.position.y = ( cube.scale.y * 25 ) / 2;
+					cube.position.z = Math.ceil((-2000 + Math.floor((Math.random() * 4000)))/25)*25+(25/2);
+					THREE.GeometryUtils.merge(merged, cube);
+				}
+				merged.computeFaceNormals();
+				var group = new THREE.Mesh(merged, material);
+				group.matrixAutoUpdate = false;
+				group.updateMatrix();
+				scene.add(group);*/
+				
+				/*var filenames = ['xaa', 'xab', 'xac', 'xad'];
+				function loadpart(i) {
+					var req = new XMLHttpRequest();
+					req.open('GET', filenames[i]);
+					req.onreadystatechange = function() {
+						if (req.readyState == 4) {
+							if (req.status == 200) {
+								var lines = req.responseText.split(/\n/g);
+								var mergedB = new THREE.Geometry();
+								var materialB = new THREE.MeshLambertMaterial({color: 0xffffff,
+																		      shading: THREE.FlatShading,
+																			  overdraw: true});
+								//For each building, create the object and merge it to map.
+								lines.forEach(function(line, i) {
+									var obj = jQuery.parseJSON(line);
+									var x = obj.x;
+									var y = obj.y;
+									var height = obj.height;
+									var geom = new THREE.Geometry();
+									for (var j = 0; j < x.length; j++) {
+										var v1 = new THREE.Vector3(Math.floor(x[j]-490000.47-40000), 0, Math.floor(y[j]-152416.86-40000));
+										if (i == 1 && j == 0) {
+											//alert(x[j]-490000.47-40000);
+										}
+										var v2 = new THREE.Vector3(Math.floor(x[j]-490000.47-40000), height, Math.floor(y[j]-152416.86-40000));
+										geom.vertices.push(v1);
+										geom.vertices.push(v2);
+									}
+									for (var j = 0; j < x.length; j += 1) {
+										if (j+3 > x.length) {
+											geom.faces.push(new THREE.Face4(j, j+1, 1, 0));
+											break;
+										} else {
+											geom.faces.push(new THREE.Face4(j, j+1, j+3, j+2));
+										}
+									}
+									//geom.computeFaceNormals();
+									var shape = new THREE.Mesh(geom, materialB);
+									//scene.add(shape);
+									THREE.GeometryUtils.merge(mergedB, shape);
+								});
+								mergedB.computeFaceNormals();
+								var groupB = new THREE.Mesh(mergedB, material);
+								groupB.matrixAutoUpdate = false;
+								groupB.updateMatrix();
+								scene.add(groupB);
+								if (i == 0) {
+									alert("Should be done.");
+									animate();
+								} else {
+									loadpart(i+1);
+								}
+							} else {
+								// (something went wrong with the request)
+							}
+						}
+					}
+					req.send();
+				}
+				loadpart(0);*/
+				//loadFile(0, 0);
+				for (var k = 0; k < 5; k++) {
+					for (var j = 0; j < 10; j++) {
+						loadFile(k, 0);
+					}
+				}
+				
+				/* Lights. */
+				var ambientLight = new THREE.AmbientLight( Math.random() * 0x10 );
+				scene.add( ambientLight );
+
+				directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
+				directionalLight.position.x = Math.random() - 0.5;
+				directionalLight.position.y = 3200;
+				directionalLight.position.z = Math.random() - 0.5;
+				directionalLight.position.normalize();
+				scene.add( directionalLight );
+
+				directionalLight2 = new THREE.DirectionalLight( Math.random() * 0xffffff );
+				directionalLight2.position.x = Math.random() - 0.5;
+				directionalLight2.position.y = 3200
+				directionalLight2.position.z = Math.random() - 0.5;
+				directionalLight2.position.normalize();
+				scene.add( directionalLight2 );
+				
+				renderer = new THREE.WebGLRenderer({antialias: true});
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				container.appendChild(renderer.domElement);
+				
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+				
+				position = scene.position;
+				animate();
+			}
+			
+			function animate() {
+				requestAnimationFrame(animate);
+				render();
+				stats.update();
+			}
+			
+			function render() {
+				/* Zooming. */
+				camera.left   = window.innerWidth/(-zoom-something);
+				camera.right  = window.innerWidth/(zoom+something);
+				camera.top    = window.innerHeight/(zoom+something);
+				camera.bottom = window.innerHeight/(-zoom-something);
+				/*s++;
+				if (s == 10000) {
+					zoomin = !zoomin;
+					s = 0;
+				}
+                if (zoomin) {
+                    something += 0.001;
+                } else {
+                    something -= 0.001;
+                }*/
+				camera.updateProjectionMatrix();
+				/* Rotation. */
+				/*var timer = Date.now() * 0.0001;
+				camera.position.x = Math.cos(timer)*6400;
+				camera.position.z = Math.sin(timer)*6400;*/
+				camera.lookAt(position);
+				renderer.render(scene, camera);
+			}
+			
+			document.onkeydown = checkKey;
+			function checkKey(e) {
+				e = e || window.event;
+				switch (e.keyCode) {
+					/* Left */
+					case 37:  position.z += moveSpeed;
+					          position.x -= moveSpeed;
+							  camera.position.z += moveSpeed;
+                              camera.position.x	-= moveSpeed;
+							  break;
+					/* Up */
+					case 38:  position.z -= moveSpeed;
+					          position.x -= moveSpeed;
+							  camera.position.z -= moveSpeed;
+                              camera.position.x	-= moveSpeed;
+							  break;
+					/* Right */
+					case 39:  position.z -= moveSpeed;
+					          position.x += moveSpeed;
+							  camera.position.z -= moveSpeed;
+                              camera.position.x	+= moveSpeed;
+							  break;
+					/* Down */
+					case 40:  position.z += moveSpeed;
+					          position.x += moveSpeed;
+							  camera.position.z += moveSpeed;
+                              camera.position.x	+= moveSpeed;
+							  break;
+				}
+			}
+			
+			function loadFile(x, y) {
+				var req = new XMLHttpRequest();
+					req.open('GET', "/WebApp/parts/part"+x+y);
+					req.onreadystatechange = function() {
+						if (req.readyState == 4) {
+							if (req.status == 200) {
+								var lines = req.responseText.split(/\n/g);
+								addBuildings(lines);
+							} else {
+								// (something went wrong with the request)
+							}
+						}
+					}
+					req.send();
+			}
+			
+			function addBuildings(lines) {
+				var materialB = new THREE.MeshLambertMaterial({color: 0xffffff,
+															  shading: THREE.FlatShading,
+															  overdraw: true});
+				/* For each building, create the object and merge it to map. */
+				lines.forEach(function(line, i) {
+					if (line != "\n") {
+						var obj = jQuery.parseJSON(line);
+						var x = obj.x;
+						var y = obj.y;
+						var height = obj.height;
+						var buildingPts = [];
+						var endPoint;
+						for (var j = 0; j < x.length; j++) {
+							if(j == 0) {
+								endPoint = new THREE.Vector2(x[j], y[j]);
+							}
+							buildingPts.push(new THREE.Vector2(x[j], y[j]));
+						}
+						for (var index = 0; index < buildingPts.length; index++) {
+							for (var next = index+1; next < buildingPts.length; next++) {
+								if (buildingPts[index] == buildingPts[next]) {
+									buildingPts.splice(next, 1);
+								}
+							}
+						}
+						buildingPts.push(endPoint);
+						var buildingShape = new THREE.Shape(buildingPts);
+						addShape(buildingShape, x[0], 0, y[0], height);
+					}
+				});
+			}
+			
+			function addShape(shape, x, y, z, h) {
+				var extrusionSettings = {
+					size: h, height: 1, curveSegments: 3,
+					bevelThickness: 1, bevelSize: 2, bevelEnabled: false,
+					material: 0, extrudeMaterial: 1
+				};
+				var geometry = new THREE.ExtrudeGeometry( shape, extrusionSettings );
+				var material = new THREE.MeshBasicMaterial( { color: 0xCC000000, side: THREE.DoubleSide, overdraw: true } );
+
+				var mesh = new THREE.Mesh( geometry, material );
+				mesh.position.set( x, y, z );
+				mesh.rotation.set( 0, 45, 0 )
+				scene.add( mesh );
+			}
+		</script>
+	</body>
+</html>
