@@ -15,6 +15,20 @@
 			var position;
 			var moveSpeed = 50;
 			var directionalLight, directionalLight2, ambientLight;
+			var loaded = [[false, false], [false, false]];
+			//var mapGeometry = new THREE.Geometry();
+			
+			/* 10x10 grid of geometries for the map. */
+			var mapGeometry = new Array(10);
+			var group       = new Array(10);
+			for (var i = 0; i < mapGeometry.length; i++) {
+				mapGeometry[i] = new Array(10);
+				group[i]       = new Array(10);
+				for (var j = 0; j < mapGeometry[i].length; j++) {
+					mapGeometry[i][j] = new THREE.Geometry();
+					group[i][j]       = new THREE.Mesh();
+				}
+			}
             
 			init();
 			
@@ -29,8 +43,8 @@
 													 window.innerWidth/zoom,
 													 window.innerHeight/zoom,
 													 window.innerHeight/-zoom,
-													 -10000,
-													 1000000);
+													 -1000000000,
+													 10000000000);
 				camera.position.x = 6400;
 				camera.position.y = 3200;
 				camera.position.z = 6400;
@@ -41,16 +55,20 @@
 				var merged = new THREE.Geometry();
 				
 				/* Draw the grid. */
-				var size = 0, step = 25;
+				var xRange = 77835.09;
+				var yRange = 58846.53;
+				var steps = 10;
+				var xStep = xRange/steps;
+				var yStep = yRange/steps;
 				var geometry = new THREE.Geometry();
-				for (var i = -size; i <= size; i += step) {
-					geometry.vertices.push(new THREE.Vector3(-size, 0, i));
-					geometry.vertices.push(new THREE.Vector3(size, 0, i));
-					geometry.vertices.push(new THREE.Vector3(i, 0, -size));
-					geometry.vertices.push(new THREE.Vector3(i, 0, size));
+				for (var i = 0; i < steps; i++) {
+					geometry.vertices.push(new THREE.Vector3(i*xStep, 0, 0));
+					geometry.vertices.push(new THREE.Vector3(i*xStep, 0, yRange));
+					geometry.vertices.push(new THREE.Vector3(0, 0, i*yStep));
+					geometry.vertices.push(new THREE.Vector3(xRange, 0, i*yStep));
 				}
 				var material = new THREE.LineBasicMaterial({color: 0x000000,
-															opacity: 0.3});
+															opacity: 1});
 				var grid = new THREE.Line(geometry, material);
 				grid.type = THREE.LinePieces;
 				scene.add(grid);
@@ -91,6 +109,19 @@
 				container.appendChild( stats.domElement );
 				
 				position = scene.position;
+				/* For some reason this does not seem to work. */
+				//while (!isLoaded()) {
+					/* Wait for files to load. */
+				//}
+				/*alert('Files should be loaded.');
+				mapGeometry.computeFaceNormals();
+				var material = new THREE.MeshLambertMaterial({color: 0xCC0000,
+															  shading: THREE.FlatShading,
+															  overdraw: true});
+				var group = new THREE.Mesh(mapGeometry, material);
+				group.matrixAutoUpdate = false;
+				group.updateMatrix();
+				scene.add(group);*/
 				/* Start the rendering. */
 				animate();
 			}
@@ -107,7 +138,7 @@
 				camera.right  = window.innerWidth/(zoom+something);
 				camera.top    = window.innerHeight/(zoom+something);
 				camera.bottom = window.innerHeight/(-zoom-something);
-				/*s++;
+				s++;
 				if (s == 10000) {
 					zoomin = !zoomin;
 					s = 0;
@@ -116,7 +147,7 @@
                     something += 0.001;
                 } else {
                     something -= 0.001;
-                }*/
+                }
 				camera.updateProjectionMatrix();
 				/* Rotation. */
 				/*var timer = Date.now() * 0.0001;
@@ -165,7 +196,17 @@
 						if (req.readyState == 4) {
 							if (req.status == 200) {
 								var lines = req.responseText.split(/\n/g);
-								addBuildings(lines);
+								addBuildings(lines, x, y);
+								loaded[x][y] = true;
+								mapGeometry[x][y].computeFaceNormals();
+								var material = new THREE.MeshLambertMaterial({color: 0xCC0000,
+																			  shading: THREE.FlatShading,
+																			  overdraw: true});
+								group[x][y] = new THREE.Mesh(mapGeometry[x][y], material);
+								group[x][y].matrixAutoUpdate = false;
+								group[x][y].updateMatrix();
+								scene.add(group[x][y]);
+								alert(x+', '+y);
 							} else {
 								// (something went wrong with the request)
 							}
@@ -174,7 +215,7 @@
 					req.send();
 			}
 			
-			function addBuildings(lines) {
+			function addBuildings(lines, gridX, gridY) {
 				var materialB = new THREE.MeshLambertMaterial({color: 0xffffff,
 															  shading: THREE.FlatShading,
 															  overdraw: true});
@@ -208,27 +249,49 @@
 						   thing twice. */
 						buildingPts.push(endPoint);
 						var buildingShape = new THREE.Shape(buildingPts);
-						addShape(buildingShape, x[0], 0, y[0], height);
+						addShape(buildingShape, x[0], 0, y[0], height, gridX, gridY);
 					}
 				});
 			}
 			
 			/* Extrudes the basic 2d shape we made from the coordinates.
 			   Adds it to the map. */
-			function addShape(shape, x, y, z, h) {
-				var extrusionSettings = {
-					size: h, height: 1, curveSegments: 3,
+			function addShape(shape, x, y, z, h, gridX, gridY) {
+				/*var extrusionSettings = {
+					size: 1, height: 1, curveSegments: 3,
 					bevelThickness: 1, bevelSize: 2, bevelEnabled: false,
 					material: 0, extrudeMaterial: 1
-				};
+				};*/
+				var extrusionSettings = {amount: h};
 				var geometry = new THREE.ExtrudeGeometry( shape, extrusionSettings );
-				var material = new THREE.MeshBasicMaterial( { color: 0xCC000000, side: THREE.DoubleSide, overdraw: true } );
-
+				var material = new THREE.MeshBasicMaterial( { color: 0xCCBB00, side: THREE.DoubleSide, overdraw: true } );
+				
 				var mesh = new THREE.Mesh( geometry, material );
-				mesh.position.set( x, y, z );
-				mesh.rotation.set( 0, 45, 0 )
-				scene.add( mesh );
+				var axis = new THREE.Vector3(1,0,0);
+				rotateAroundWorldAxis(mesh, axis, Math.PI / 2);
+				
+				THREE.GeometryUtils.merge(mapGeometry[gridX][gridY], mesh);
 			}
+			
+			/* Should return true once all the file data has been loaded. */
+			function isLoaded() {
+				for (var i = 0; i < loaded.size; i++) {
+					for (var j = 0; j < loaded[0].size; j++) {
+						if (loaded[i][j] == false) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+			
+			function rotateAroundWorldAxis( object, axis, radians ) {
+				var rotationMatrix = new THREE.Matrix4();
+				rotationMatrix.makeRotationAxis( axis.normalize(), radians );
+				rotationMatrix.multiply( object.matrix );
+				object.matrix = rotationMatrix;
+				object.rotation.setEulerFromRotationMatrix( object.matrix );
+}
 		</script>
 	</body>
 </html>
