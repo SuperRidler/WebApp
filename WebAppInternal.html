@@ -15,8 +15,10 @@
 			var position;
 			var moveSpeed = 50;
 			var directionalLight, directionalLight2, ambientLight;
+			var midX = 77835.09/2;
+			var midY = 58846.53/2;
+			//var midPosition = new THREE.Vector3(-midX, 0, -midY);
 			var loaded = [[false, false], [false, false]];
-			//var mapGeometry = new THREE.Geometry();
 			
 			/* 10x10 grid of geometries for the map. */
 			var mapGeometry = new Array(10);
@@ -43,8 +45,8 @@
 													 window.innerWidth/zoom,
 													 window.innerHeight/zoom,
 													 window.innerHeight/-zoom,
-													 -1000000000,
-													 10000000000);
+													 -100000000000,
+													 1000000000000000000);
 				camera.position.x = 6400;
 				camera.position.y = 3200;
 				camera.position.z = 6400;
@@ -57,7 +59,7 @@
 				/* Draw the grid. */
 				var xRange = 77835.09;
 				var yRange = 58846.53;
-				var steps = 10;
+				var steps = 100;
 				var xStep = xRange/steps;
 				var yStep = yRange/steps;
 				var geometry = new THREE.Geometry();
@@ -74,11 +76,11 @@
 				scene.add(grid);
 
 				/* Load the building data, one file at a time. */
-				for (var k = 0; k < 2; k++) {
+				/*for (var k = 0; k < 2; k++) {
 					for (var j = 0; j < 2; j++) {
 						loadFile(k, j);
 					}
-				}
+				}*/
 				
 				/* Lights. */
 				var ambientLight = new THREE.AmbientLight( Math.random() * 0x10 );
@@ -138,7 +140,7 @@
 				camera.right  = window.innerWidth/(zoom+something);
 				camera.top    = window.innerHeight/(zoom+something);
 				camera.bottom = window.innerHeight/(-zoom-something);
-				s++;
+				/*s++;
 				if (s == 10000) {
 					zoomin = !zoomin;
 					s = 0;
@@ -147,13 +149,13 @@
                     something += 0.001;
                 } else {
                     something -= 0.001;
-                }
+                }*/
 				camera.updateProjectionMatrix();
 				/* Rotation. */
 				/*var timer = Date.now() * 0.0001;
 				camera.position.x = Math.cos(timer)*6400;
 				camera.position.z = Math.sin(timer)*6400;*/
-				camera.lookAt(position);
+				camera.lookAt(scene.position);
 				renderer.render(scene, camera);
 			}
 			
@@ -187,6 +189,25 @@
 							  break;
 				}
 			}
+			
+			var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel";
+			document.addEventListener(mousewheelevt, scroll, false);
+			function scroll(e) {
+				e = e || window.event;
+				var delta = e.detail? e.detail*(-120) : e.wheelDelta;
+				if (delta <= -120) {
+					something += 0.1;
+				} else {
+					something -= 0.1;
+				}
+				if (evt.preventDefault) {
+					evt.preventDefault()
+				} else {
+					return false
+				}
+
+			}
+
 			
 			/* Load the part of the grid given by x and y. */
 			function loadFile(x, y) {
