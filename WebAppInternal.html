@@ -216,22 +216,22 @@
 			/* Load the part of the grid given by x and y. */
 			function loadFile(x, y) {
 				var req = new XMLHttpRequest();
-					req.open('GET', "/WebApp/parts/part"+x+y);
+					req.open('GET', "/WebApp/parts/part"+pad(x, 2)+pad(y, 2));
 					req.onreadystatechange = function() {
 						if (req.readyState == 4) {
 							if (req.status == 200) {
 								var lines = req.responseText.split(/\n/g);
 								addBuildings(lines, x, y);
-								loaded[x][y] = true;
 								mapGeometry[x][y].computeFaceNormals();
-								var material = new THREE.MeshLambertMaterial({color: 0xCC0000,
+								var material = new THREE.MeshLambertMaterial({color: 0xffffff,
 																			  shading: THREE.FlatShading,
 																			  overdraw: true});
 								group[x][y] = new THREE.Mesh(mapGeometry[x][y], material);
 								group[x][y].matrixAutoUpdate = false;
 								group[x][y].updateMatrix();
 								scene.add(group[x][y]);
-								alert(x+', '+y);
+								//alert(x+', '+y);
+								loaded[x][y] = true;
 							} else {
 								// (something went wrong with the request)
 							}
