@@ -28,7 +28,14 @@
 			var xRange = 77835.09;
 			var yRange = 58846.53;
 			//var midPosition = new THREE.Vector3(-midX, 0, -midY);
-			var loaded = [[false, false], [false, false]];
+			var loading = false;
+			var loaded = new Array(100);
+			for (var i = 0; i < 100; i++) {
+				loaded[i] = new Array(100);
+				for (var j = 0; j < 100; j++) {
+					loaded[i][j] = false;
+				}
+			}
 			
 			/* 10x10 grid of geometries for the map. */
 			var mapGeometry = new Array(10);
