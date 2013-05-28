@@ -313,7 +313,7 @@
 				return true;
 			}
 			
-			function rotateAroundWorldAxis( object, axis, radians ) {
+			function rotateAroundWorldAxis(object, axis, radians) {
 				var rotationMatrix = new THREE.Matrix4();
 				rotationMatrix.makeRotationAxis( axis.normalize(), radians );
 				rotationMatrix.multiply( object.matrix );
