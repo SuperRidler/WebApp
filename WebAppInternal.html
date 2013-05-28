@@ -200,9 +200,9 @@
 				e = e || window.event;
 				var delta = e.detail? e.detail*(-120) : e.wheelDelta;
 				if (delta <= -120) {
-					something += 0.1;
+					zoomFactor += 0.1;
 				} else {
-					something -= 0.1;
+					zoomFactor -= 0.1;
 				}
 				if (evt.preventDefault) {
 					evt.preventDefault()
