@@ -144,33 +144,22 @@
 			}
 			
 			function animate() {
+				checkGrid();
 				requestAnimationFrame(animate);
 				render();
-				stats.update();
+				//stats.update();
 			}
 			
 			function render() {
 				/* Zooming. */
-				camera.left   = window.innerWidth/(-zoom-something);
-				camera.right  = window.innerWidth/(zoom+something);
-				camera.top    = window.innerHeight/(zoom+something);
-				camera.bottom = window.innerHeight/(-zoom-something);
-				/*s++;
-				if (s == 10000) {
-					zoomin = !zoomin;
-					s = 0;
-				}
-                if (zoomin) {
-                    something += 0.001;
-                } else {
-                    something -= 0.001;
-                }*/
+				camera.fov *= zoomFactor;
+				zoomFactor = 1;
 				camera.updateProjectionMatrix();
 				/* Rotation. */
 				/*var timer = Date.now() * 0.0001;
 				camera.position.x = Math.cos(timer)*6400;
 				camera.position.z = Math.sin(timer)*6400;*/
-				camera.lookAt(scene.position);
+				camera.lookAt(position);
 				renderer.render(scene, camera);
 			}
 			
