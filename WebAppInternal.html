@@ -93,21 +93,23 @@
 					}
 				}*/
 				
+				//loadFile(1, 27);
+				
 				/* Lights. */
 				var ambientLight = new THREE.AmbientLight( Math.random() * 0x10 );
 				scene.add( ambientLight );
 
 				directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
-				directionalLight.position.x = Math.random() - 0.5;
+				directionalLight.position.x = midX;
 				directionalLight.position.y = 3200;
-				directionalLight.position.z = Math.random() - 0.5;
+				directionalLight.position.z = midY;
 				directionalLight.position.normalize();
 				scene.add( directionalLight );
 
 				directionalLight2 = new THREE.DirectionalLight( Math.random() * 0xffffff );
-				directionalLight2.position.x = Math.random() - 0.5;
-				directionalLight2.position.y = 3200
-				directionalLight2.position.z = Math.random() - 0.5;
+				directionalLight2.position.x = midX;
+				directionalLight2.position.y = 3200;
+				directionalLight2.position.z = midY;
 				directionalLight2.position.normalize();
 				scene.add( directionalLight2 );
 				
