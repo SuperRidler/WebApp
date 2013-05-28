@@ -58,18 +58,12 @@
 				
 				/* Setting up the camera (view)... probably will
 				    change this from an orthographic view to something nicer. */
-				camera = new THREE.OrthographicCamera(window.innerWidth/-zoom,
-													 window.innerWidth/zoom,
-													 window.innerHeight/zoom,
-													 window.innerHeight/-zoom,
-													 -100000000000,
-													 1000000000000000000);
-				camera.position.x = 6400;
-				camera.position.y = 3200;
-				camera.position.z = 6400;
+				camera = new THREE.PerspectiveCamera(90, window.innerWidth/window.innerHeight, 0.1, 100000);
+				camera.position.x = 35;
+				camera.position.z = 35;
+				camera.position.y = 75;
 				
 				scene = new THREE.Scene();
-				
 				
 				var merged = new THREE.Geometry();
 				
