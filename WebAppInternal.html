@@ -285,16 +285,16 @@
 			/* Extrudes the basic 2d shape we made from the coordinates.
 			   Adds it to the map. */
 			function addShape(shape, x, y, z, h, gridX, gridY) {
-				/*var extrusionSettings = {
-					size: 1, height: 1, curveSegments: 3,
-					bevelThickness: 1, bevelSize: 2, bevelEnabled: false,
-					material: 0, extrudeMaterial: 1
-				};*/
-				var extrusionSettings = {amount: h};
+				var extrusionSettings = {
+					amount: h, size: 0, height: 0, curveSegments: 0,
+					bevelThickness: 0, bevelSize: 0, bevelEnabled: false,
+					material: 0, extrudeMaterial: 0
+				};
+				//var extrusionSettings = {amount: h};
 				var geometry = new THREE.ExtrudeGeometry( shape, extrusionSettings );
 				var material = new THREE.MeshBasicMaterial( { color: 0xCCBB00, side: THREE.DoubleSide, overdraw: true } );
 				
-				var mesh = new THREE.Mesh( geometry, material );
+				var mesh = new THREE.Mesh(geometry, material);
 				var axis = new THREE.Vector3(1,0,0);
 				rotateAroundWorldAxis(mesh, axis, Math.PI / 2);
 				
