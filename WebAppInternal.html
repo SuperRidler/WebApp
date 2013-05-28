@@ -117,13 +117,15 @@
 				renderer.setSize(window.innerWidth, window.innerHeight);
 				container.appendChild(renderer.domElement);
 				
-				stats = new Stats();
+				/*stats = new Stats();
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
 				stats.domElement.style.zIndex = 100;
-				container.appendChild( stats.domElement );
+				container.appendChild( stats.domElement );*/
 				
 				position = scene.position;
+				
+				moveToSquare(1, 27);
 				/* For some reason this does not seem to work. */
 				//while (!isLoaded()) {
 					/* Wait for files to load. */
