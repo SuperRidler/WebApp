@@ -246,6 +246,9 @@
 															  overdraw: true});
 				/* For each building, create the object and add it to the map.
                    Will be switching this to a geometry merge for speed.*/
+				if (lines == '\n') {
+					return;
+				}
 				lines.forEach(function(line, i) {
 					if (line != "\n") {
 						var obj = jQuery.parseJSON(line);
