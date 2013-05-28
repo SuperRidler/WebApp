@@ -168,28 +168,28 @@
 				e = e || window.event;
 				switch (e.keyCode) {
 					/* Left */
-					case 37:  position.z += moveSpeed;
-					          position.x -= moveSpeed;
-							  camera.position.z += moveSpeed;
-                              camera.position.x	-= moveSpeed;
+					case 37:  position.z -= moveSpeed;
+					          position.x += moveSpeed;
+							  camera.position.z -= moveSpeed;
+                              camera.position.x	+= moveSpeed;
 							  break;
 					/* Up */
-					case 38:  position.z -= moveSpeed;
-					          position.x -= moveSpeed;
-							  camera.position.z -= moveSpeed;
-                              camera.position.x	-= moveSpeed;
-							  break;
-					/* Right */
-					case 39:  position.z -= moveSpeed;
-					          position.x += moveSpeed;
-							  camera.position.z -= moveSpeed;
-                              camera.position.x	+= moveSpeed;
-							  break;
-					/* Down */
-					case 40:  position.z += moveSpeed;
+					case 38:  position.z += moveSpeed;
 					          position.x += moveSpeed;
 							  camera.position.z += moveSpeed;
                               camera.position.x	+= moveSpeed;
+							  break;
+					/* Right */
+					case 39:  position.z += moveSpeed;
+					          position.x -= moveSpeed;
+							  camera.position.z += moveSpeed;
+                              camera.position.x	-= moveSpeed;
+							  break;
+					/* Down */
+					case 40:  position.z -= moveSpeed;
+					          position.x -= moveSpeed;
+							  camera.position.z -= moveSpeed;
+                              camera.position.x	-= moveSpeed;
 							  break;
 				}
 			}
