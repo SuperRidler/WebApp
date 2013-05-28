@@ -38,11 +38,11 @@
 			}
 			
 			/* 10x10 grid of geometries for the map. */
-			var mapGeometry = new Array(10);
-			var group       = new Array(10);
+			var mapGeometry = new Array(100);
+			var group       = new Array(100);
 			for (var i = 0; i < mapGeometry.length; i++) {
-				mapGeometry[i] = new Array(10);
-				group[i]       = new Array(10);
+				mapGeometry[i] = new Array(100);
+				group[i]       = new Array(100);
 				for (var j = 0; j < mapGeometry[i].length; j++) {
 					mapGeometry[i][j] = new THREE.Geometry();
 					group[i][j]       = new THREE.Mesh();
