@@ -319,7 +319,37 @@
 				rotationMatrix.multiply( object.matrix );
 				object.matrix = rotationMatrix;
 				object.rotation.setEulerFromRotationMatrix( object.matrix );
-}
+			}
+			
+			function moveToSquare(x, y) {
+				position.z = y * (yRange/100);
+				position.x = x * (xRange/100);
+				camera.position.z = position.z - 100;
+                camera.position.x = position.x - 100;
+			}
+			
+			function checkGrid() {
+				if (!loading) {
+					loading = true;
+					var x = Math.floor(position.x/(xRange/100));
+					var y = Math.floor(position.z/(yRange/100));
+					for (var i = -2; i <= 2; i++) {
+						for (var j = -2; j <= 2; j++) {
+							if (x+i >= 0 && y+j >= 0 && !loaded[x+i][y+j]) {
+								loaded[x+i][y+j] = true;
+								loadFile(x+i, y+j);
+							}
+						}
+					}
+					loading = false;
+				}
+			}
+			
+			function pad(num, size) {
+				var s = num+"";
+				while (s.length < size) s = "0" + s;
+				return s;
+			}
 		</script>
 	</body>
 </html>
